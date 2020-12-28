@@ -19,58 +19,69 @@ variable "map_public_ip_on_launch" {
   default = true
 }
 
-variable "common_tags" {
-  description = "Commin tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
 variable "vpc_tags" {
   description = "Additional tags for the VPC"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "project-vpc"
+  }
+
 }
 
 variable "public_subnet_tags" {
   description = "Additional tags for the public subnet"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "public-subnet"
+  }
 }
 
 variable "private_subnet_tags" {
   description = "Additional tags for the private subnet"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "private-subnet"
+  }
 }
 
 variable "gw_tags" {
   description = "Additional tags for the GW"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "igw"
+  }
 }
 
 variable "eip_tags" {
   description = "Additional tags for the S3 EIP"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "eip"
+  }
 }
 
 variable "nat_tags" {
   description = "Additional tags for the NAT"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "nat-gw"
+  }
 }
 
 variable "public_route_table_tags" {
   description = "Additional tags for the public route table"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "public-rt"
+  }
 }
 
 variable "private_route_table_tags" {
   description = "Additional tags for the private route table"
   type        = map(string)
-  default     = {}
+  default = {
+    Name   = "private-rt"
+  }
 }
 
 # ec2 module tags
@@ -174,6 +185,14 @@ variable "ec2_iam_role_tags" {
   default     = {}
 }
 
+variable "key_file" {
+  description = "project key file name"
+  type        = string
+  default     = "project_key"
+}
+
+
+
 
 ##################################################################################
 # LOCALS
@@ -184,5 +203,11 @@ locals {
     Purpose   = "project"
     Owner     = "dana"
   }
+
+  jenkins_default_name = "jenkins"
+  jenkins_home = "/home/ubuntu/jenkins_home"
+  jenkins_home_mount = "${local.jenkins_home}:/var/jenkins_home"
+  docker_sock_mount = "/var/run/docker.sock:/var/run/docker.sock"
+  java_opts = "JAVA_OPTS='-Djenkins.install.runSetupWizard=false'"
 
 }
