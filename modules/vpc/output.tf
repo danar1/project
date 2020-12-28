@@ -25,3 +25,7 @@ output "public_subnet_count" {
 output "private_subnet_count" {
     value = local.private_subnet_count
 }
+
+output "nat_gw" {
+    value = aws_nat_gateway.nat-gw
+}
