@@ -19,6 +19,12 @@ variable "map_public_ip_on_launch" {
   default = true
 }
 
+variable "common_tags" {
+  description = "Commin tags for all resources"
+  type        = map(string)
+  default     = {}
+}
+
 variable "vpc_tags" {
   description = "Additional tags for the VPC"
   type        = map(string)
@@ -168,13 +174,14 @@ variable "ec2_iam_role_tags" {
   default     = {}
 }
 
+
 ##################################################################################
 # LOCALS
 ##################################################################################
 
 locals {
   common_tags = {
-    Purpose   = "learning"
+    Purpose   = "project"
     Owner     = "dana"
   }
 
