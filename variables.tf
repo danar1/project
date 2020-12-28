@@ -191,6 +191,12 @@ variable "key_file" {
   default     = "project_key"
 }
 
+variable "jenkins_agent_count" {
+  description = "The amount of jenkins agents"
+  type        = number
+  default     = 2
+}
+
 
 
 
