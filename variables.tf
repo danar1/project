@@ -197,6 +197,27 @@ variable "jenkins_agent_count" {
   default     = 2
 }
 
+variable "kubernetes_version" {
+  default = 1.18
+  description = "kubernetes version"
+}
+
+variable "kubectl_version" {
+  type    = string
+  default = "1.18.0"
+  description = "kubectl version"
+}
+
+variable "ec2_role_name" {
+  type    = string
+  default = "project-ec2-iam-role"
+}
+
+variable "ec2_policy_name" {
+  type    = string
+  default = "project-ec2-policy"
+}
+
 
 
 
@@ -215,5 +236,7 @@ locals {
   jenkins_home_mount = "${local.jenkins_home}:/var/jenkins_home"
   docker_sock_mount = "/var/run/docker.sock:/var/run/docker.sock"
   java_opts = "JAVA_OPTS='-Djenkins.install.runSetupWizard=false'"
+
+  cluster_name = "project-eks"
 
 }

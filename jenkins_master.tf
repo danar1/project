@@ -96,7 +96,8 @@ resource "aws_security_group" "jenkins-sg" {
 
 
 resource "aws_instance" "jenkins_server" {
-  ami                         = "ami-07d0cf3af28718ef8"
+  ami                         = "ami-07d0cf3af28718ef8" 
+  # my project jenkins server AMI: ami-0130abd2105a5e1c6
   instance_type               = "t3.micro"
   key_name                    = aws_key_pair.project_key.key_name
   subnet_id                   = module.vpc.private_subnets[0]
@@ -160,7 +161,6 @@ resource "aws_instance" "jenkins_server" {
 # this
  provisioner "remote-exec" {
     inline = [
-      "sudo touch dana",
       "sudo apt-get update -y",
       "sudo apt install docker.io -y",
       "sudo systemctl start docker",
