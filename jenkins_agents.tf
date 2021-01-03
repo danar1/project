@@ -1,6 +1,7 @@
 resource "aws_instance" "jenkins_agent" {
   count                       = var.jenkins_agent_count
-  ami                         = "ami-04d29b6f966df1537"
+  # ami                         = "ami-04d29b6f966df1537"
+  ami                         = "ami-09216d64cce02bbb5"
   # my project Jenkins agent i used: ami-09216d64cce02bbb5
   instance_type               = var.instance_type
   subnet_id                   = module.vpc.private_subnets[count.index]
@@ -12,7 +13,7 @@ resource "aws_instance" "jenkins_agent" {
 
   # security_groups = ["default", aws_security_group.jenkins-sg.name]
   # security_groups = [aws_security_group.jenkins-sg.name]
-  vpc_security_group_ids      = [aws_security_group.jenkins-sg.id]
+  vpc_security_group_ids      = [aws_security_group.jenkins-agent-sg.id]
   depends_on                  = [module.vpc.nat_gw, module.eks.cluster_id]
 
   # connection {
@@ -30,21 +31,58 @@ resource "aws_instance" "jenkins_agent" {
     private_key  = file(var.key_file)
   }
 
-  provisioner "remote-exec" {
+# this
+#   provisioner "remote-exec" {
+#     inline = [
+#       "sudo yum update -y",
+#       "sudo yum install docker git java-1.8.0 -y",
+#       "sudo systemctl enable docker",
+#       "sudo service docker start",
+#       "sudo usermod -aG docker ec2-user",
+#       "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}",
+#       "curl -LO https://storage.googleapis.com/kubernetes-release/release/v${var.kubectl_version}/bin/linux/amd64/kubectl",
+#       "chmod +x ./kubectl",
+#       "sudo mv ./kubectl /usr/local/bin/kubectl",
+#       "sudo yum install python3 -y"
+#     ]
+#   }
+# }
+
+provisioner "remote-exec" {
     inline = [
-      "sudo yum update -y",
-      "sudo yum install docker git java-1.8.0 -y",
-      "sudo systemctl enable docker",
-      "sudo service docker start",
-      "sudo usermod -aG docker ec2-user",
-      "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}",
-      "curl -LO https://storage.googleapis.com/kubernetes-release/release/v${var.kubectl_version}/bin/linux/amd64/kubectl",
-      "chmod +x ./kubectl",
-      "sudo mv ./kubectl /usr/local/bin/kubectl",
-      "sudo yum install python3 -y"
+      "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
     ]
   }
 }
+
+resource "aws_security_group" "jenkins-agent-sg" {
+  name = "jenkins-agent-sg"
+  vpc_id = module.vpc.id
+  description = "Allow Jenkins agent inbound traffic"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    security_groups = [aws_security_group.jenkins-master-sg.id, aws_security_group.bastion-ssh.id]
+  }
+
+  egress {
+    description = "Allow all outgoing traffic"
+    from_port = 0
+    to_port = 0
+    // -1 means all
+    protocol = "-1"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+  
+  tags = {
+    Name = "jenkins-agent-sg"
+  }
+}
+
 
 
 

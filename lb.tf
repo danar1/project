@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "jenkins" {
 
 resource "aws_lb_target_group_attachment" "jenkins" {
   target_group_arn = aws_lb_target_group.jenkins.id
-  target_id        = aws_instance.jenkins_server.id
+  target_id        = aws_instance.jenkins_master.id
   port             = 8080
 }
 
@@ -52,13 +52,6 @@ resource "aws_security_group" "jenkins-lb-sg" {
   name = "jenkins-lb-sg"
   vpc_id = module.vpc.id
   description = "Allow Jenkins inbound traffic"
-
-  ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     from_port = 80
@@ -86,5 +79,5 @@ resource "aws_security_group" "jenkins-lb-sg" {
     ]
   }
   
-  tags = merge(local.common_tags, map("Name", "enkins-lb-sg"))
+  tags = merge(local.common_tags, map("Name", "jenkins-lb-sg"))
 }

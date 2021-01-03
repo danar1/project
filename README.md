@@ -13,7 +13,7 @@ I did this:
 On my mac run:
 
 
-Under "mapRoles" sectoion add:
+Under "mapRoles" sectoion add:  todo - use Micky flow
 - "groups":
       - "system:nodes"
       "rolearn": "arn:aws:iam::783216792412:role/project-ec2-iam-role"
@@ -31,6 +31,8 @@ to create the .kube/config file
 
 
 4. configure jenkins -
+If using then AMI for jenkins then need to add the agents
+Otherwise, if using the remote-exex provisioner, hen need to configure jenkins:
 In browser enter jenkins load balancer DNS (Example: jenkins-alb-923034631.us-east-1.elb.amazonaws.com)
 First add slaves (with lable 'amazon-linux2')
 Add credentioals for ec2-user (SSH Username with private key)

@@ -9,15 +9,21 @@ module "vpc" {
   cidr_block               = var.cidr_block
   azs                      = slice(data.aws_availability_zones.available.names, 0, 2)
   map_public_ip_on_launch  = var.map_public_ip_on_launch
-  tags                     = local.common_tags
+  tags                     = merge(local.common_tags, {"kubernetes.io/cluster/${local.cluster_name}" = "shared"})
   vpc_tags                 = var.vpc_tags
-  public_subnet_tags       = var.public_subnet_tags
-  private_subnet_tags      = var.private_subnet_tags
   gw_tags                  = var.gw_tags
   eip_tags                 = var.eip_tags
   nat_tags                 = var.nat_tags
   public_route_table_tags  = var.public_route_table_tags
   private_route_table_tags = var.private_route_table_tags
+  public_subnet_tags       = merge(var.public_subnet_tags, {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
+  })
+  private_subnet_tags      = merge(var.private_subnet_tags, {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
+  })
 
 }
 
