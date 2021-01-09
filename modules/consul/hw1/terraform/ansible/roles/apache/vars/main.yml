@@ -1,0 +1,7 @@
+---
+# vars file for apache
+apache_pgk: apache2
+
+# consul
+consul_config_folder: /etc/consul.d
+consul_apache_config_path: "{{ consul_config_folder }}/apache2.json"

@@ -1,0 +1,35 @@
+---
+# vars file for ops-base
+
+dependencies_pkgs_install:
+  - unzip
+  - dnsmasq
+
+loopback: "127.0.0.1"
+consul_dns_port: "8600"
+consul_domain: "~consul"
+
+consul_download_url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
+
+consul_zip_path: "/tmp/consul.zip"
+consul_bin_path: "/usr/local/bin/"
+consul_agent_name_tag: "opsschool-agent"
+consul_server_name_tag: "opsschool-server"
+
+# condul configuration
+consul_data_dir: "/opt/consul"
+consul_datacenter: "opsschool"
+consul_encrypt: "uDBV4e+LbFW3019YKPxIrg=="
+consul_disable_remote_exec: "true"
+consul_disable_update_check: "true"
+consul_leave_on_terminate: "true"
+consul_retry_join: '["provider=aws tag_key=consul_server tag_value=true"]'
+consul_enable_script_checks: "true"
+consul_server_bootstrap_expect: "{{ consul_servers_count }}"
+consul_server_ui: "true"
+consul_client_addr: "0.0.0.0"
+
+consul_directories:
+  - /opt/consul
+  - /etc/consul.d
+  - /run/consul

@@ -39,8 +39,10 @@ resource "aws_security_group" "jenkins-master-sg" {
 
 resource "aws_instance" "jenkins_master" {
   # ami                         = "ami-07d0cf3af28718ef8" 
-  ami                         = "ami-0130abd2105a5e1c6" 
-  # my project jenkins server AMI: ami-0130abd2105a5e1c6
+  # ami                         = "ami-0130abd2105a5e1c6" 
+  # ami                         = "ami-03c2702ee825ff2d5" 
+  ami                         = "ami-0bc4b672a160308cd"
+  # my project jenkins server AMI: ami-0130abd2105a5e1c6, ami-03c2702ee825ff2d5 (this is with k8s and two slaves, jenkins-master-img2, ami-0bc4b672a160308cd jenkins-master-img3)
   instance_type               = "t3.micro"
   key_name                    = aws_key_pair.project_key.key_name
   subnet_id                   = module.vpc.private_subnets[0]

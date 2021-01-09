@@ -1,0 +1,9 @@
+StrictHostKeyChecking=no
+
+{% for node in nodes %}
+Host {{ node }}
+  HostName {{ node }}
+  IdentityFile {{ server_identity }}
+  User ubuntu
+  
+{% endfor %}

@@ -218,7 +218,10 @@ variable "ec2_policy_name" {
   default = "project-ec2-policy"
 }
 
-
+variable "tf-state-bucket" {
+  type    = string
+  default = "project-tf-state-bucket"
+}
 
 
 ##################################################################################

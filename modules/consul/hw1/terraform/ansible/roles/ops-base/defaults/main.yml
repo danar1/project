@@ -1,0 +1,6 @@
+---
+# defaults file for ops-base
+
+# consul default vars
+consul_version: "1.8.5"
+consul_servers_count: "3"

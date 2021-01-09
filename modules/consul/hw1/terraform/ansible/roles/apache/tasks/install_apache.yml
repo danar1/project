@@ -1,0 +1,14 @@
+- name: Installing apache2
+  apt:
+    name: "{{ apache_pgk }}"
+    state: latest
+    update_cache: yes
+
+- name: Register apache service in consul
+  template:
+    src: apache_register_consul.j2
+    dest: "{{ consul_apache_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

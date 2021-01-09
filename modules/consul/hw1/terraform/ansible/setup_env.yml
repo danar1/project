@@ -1,0 +1,15 @@
+---
+- name: Install Consul
+  hosts: consul_cluster
+  become: true
+  vars:
+    - consul_agent_name_tag: "opsschool-agent"
+  roles:
+    - role: ops-base
+      # vars:
+      #   consul_version: "1.8.5"
+      #   consul_servers_count: "3"
+    - role: apache
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == consul_agent_name_tag

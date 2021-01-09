@@ -1,5 +1,79 @@
 # project
 
+###
+
+After clone the repository:
+
+# Prepare AMI
+1. Download packer 
+https://www.packer.io/downloads
+
+2. Unzip and move packer binary to location in PATH
+Example for mac os: 
+mv packer /usr/local/bin/
+
+# Create ubuntu based AMI
+1. cd packer/ubuntu
+2. cp vars_example.json vars.json
+3. vim vars.json 
+4. Set all the required variables in vars.json file 
+(git is set to ignore vars.json)
+5. build the AMI:
+   packer build -var-file=./vars.json template.json
+6. Save the AMI ID from packer output for later use
+(ami-083547ef8b8f5b0bc)
+
+# Create s3 bucket for remote state
+1. cd s3
+2. terraform init
+3. terraform apply
+
+# Deploy the infrastructur
+
+
+# Consul configuration - Todo - Automate this
+1. ssh to ansible instance
+   ssh -i service_discovery_key.pem ubuntu@<ip>
+
+2. cd ansible
+3. Configure ssh to consul cluster
+   ansible-playbook configure_ssh.yml -e ansible_python_interpreter=/usr/bin/python3
+4. Configure consul
+   ansible-playbook -i aws_ec2.yml setup_env.yml -e ansible_python_interpreter=/usr/bin/python3
+
+####
+
+aws eks --region=us-east-1 update-kubeconfig --name project-eks
+aws sts get-caller-identity
+kubectl edit configmap aws-auth -n kube-system
+
+
+Need to edit config map and add so:
+
+kubectl edit configmap aws-auth -n kube-system -o yaml
+
+- "groups":
+  - "system:masters"
+  "rolearn": "arn:aws:iam::783216792412:role/project-ec2-iam-role"
+  "username": "project-ec2-iam-role"
+
+
+  node("amazon-linux2") {
+    stage("Deploy") {
+     kubernetesDeploy configs: 'k8s/deploy-kandula.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8s', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+    }
+}
+
+node("amazon-linux2") {
+    stage("Deploy") {
+     kubernetesDeploy configs: 'k8s/deploy-kandula.yaml',kubeconfigId: 'k8s'
+     kubernetesDeploy configs: 'k8s/svc-lb-kandula.yaml',kubeconfigId: 'k8s'
+    }
+}
+
+after installing k8s plugin, need to add k8s credentials - for kube config, i entered the file content option but we can also provide path
+for ~/.kube/config (but need somehow to put this file on jenkins, because we can not run the aws command , no aws installed on the jenkins master , we have the ~/.kube/config in the ami)
+
 1. terraform init
 
 2. terraform apply
@@ -63,6 +137,7 @@ Build Monitor View
 Pipeline
 Test Results Analyzer
 Pyenv Pipeline
+Kubernetes Continuous Deploy
 
 b. 
 In github: create github app : 

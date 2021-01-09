@@ -1,0 +1,12 @@
+---
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+groups:
+  # add hosts to the group nodes if Node in value of Name tag
+  consul_servers: "'opsschool-server' in tags.Name"
+  consul_agents: "'opsschool-agent' in tags.Name"
+  consul_cluster: ('opsschool-server' in tags.Name) or ('opsschool-agent' in tags.Name)
+compose:
+  # set the ansible_host variable to connect with the private IP address without changing the hostname
+  ansible_host: private_ip_address

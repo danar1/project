@@ -1,0 +1,15 @@
+---
+- name: Setup ssh on ansible instance
+  hosts: localhost
+  become: yes
+  vars_files:
+    - ./external_vars.yml
+
+  tasks:
+    - name: Configure ssh
+      template:
+        src: ./ssh_conf.j2
+        dest: /home/ubuntu/.ssh/config
+        owner: ubuntu
+        group: ubuntu
+        backup: yes
