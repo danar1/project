@@ -65,3 +65,12 @@ output "jenkins_agents_role_arn" {
   description = "Jenkins agents role arn"
   value       = aws_iam_role.ec2-iam-role.arn
 }
+
+output "consul_alb_dns" {
+  description = "consul alb dns"
+  value       = module.consul.consul_alb_dns
+}
+
+output "consul_servers_private_ips" {
+  value = module.consul.consul_servers_private_ips
+}
