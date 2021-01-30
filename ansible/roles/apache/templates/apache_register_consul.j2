@@ -1,0 +1,21 @@
+{
+  "service": {
+    "name": "webserver",
+    "id": "apache-80",
+    "tags": [
+      "apache"
+    ],
+    "port": 80,
+    "check": [
+     {
+      "id": "api",
+      "name": "HTTP API on port 80",
+      "http": "http://localhost:80",
+      "method": "GET",
+      "header": {"Content-Type": ["application/json"]},
+      "interval": "10s",
+      "timeout": "1s"
+    }
+   ]
+}
+}

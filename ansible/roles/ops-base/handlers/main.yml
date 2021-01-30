@@ -1,0 +1,20 @@
+---
+# handlers file for ops-base
+
+- name: Restart dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted
+
+- name: Restart resolved
+  service:
+    name: systemd-resolved.service
+    state: restarted
+
+- name: Start consul
+  systemd:
+    name: consul
+    daemon_reload: yes
+    enabled: yes
+    state: started
+

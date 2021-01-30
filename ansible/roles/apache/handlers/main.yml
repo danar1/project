@@ -1,0 +1,6 @@
+---
+# handlers file for apache
+- name: Reload consul
+  systemd:
+    name: consul
+    state: reloaded
