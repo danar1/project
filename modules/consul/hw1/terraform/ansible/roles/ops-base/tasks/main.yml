@@ -1,3 +1,0 @@
----
-# tasks file for ops-base
-- include: install_consul.yml

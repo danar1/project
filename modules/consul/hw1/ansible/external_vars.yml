@@ -1,4 +1,0 @@
-
-server_identity: ~/.ssh/service_discovery_key.pem
-nodes:
-  - 172.31.11.98

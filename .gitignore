@@ -137,6 +137,7 @@ dmypy.json
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
+*.tfvars
 
 # logs
 *.log
