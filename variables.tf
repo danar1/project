@@ -225,7 +225,6 @@ variable "tf-state-bucket" {
 
 ###
 # consul
-
 variable "consul_servers_count" {
   description = "Number of consul servers to create"
   type        = number 
@@ -265,6 +264,20 @@ variable "consul_asg_enabled_metrics" {
   description = "Auto scaling group enabled metrics"
   type        = list(string)
 }
+
+# Jenkins
+variable "port_80_ips" {
+  description = "list of ips allowed to access jenkins master on port 80"
+  type        = list(string)
+}
+
+variable "jenkins_agent_count" {
+  description = "Number of jenkins agents to create"
+  type        = number 
+}
+
+
+
 
 
 ##################################################################################
