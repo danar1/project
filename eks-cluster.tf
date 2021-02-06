@@ -8,6 +8,8 @@ module "eks" {
   cluster_version = var.kubernetes_version
   subnets         = module.vpc.private_subnets
 
+  enable_irsa     = true
+
   tags = {
     Environment = "training"
     GithubRepo  = "terraform-aws-eks"

@@ -51,9 +51,11 @@ resource "aws_instance" "jenkins_agent" {
 #   }
 # }
 
-provisioner "remote-exec" {
-    inline = [
-      "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
-    ]
-  }
-}
+# No need this, i will run this from my mac after deploy the env
+# and get the kubeconfig file -> this will be uploaded to Jenkins master for the k8s plugin credentials
+# provisioner "remote-exec" {
+#     inline = [
+#       "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
+#     ]
+#   }
+# }

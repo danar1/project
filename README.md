@@ -44,7 +44,47 @@ mv packer /usr/local/bin/
 4. Configure consul
    ansible-playbook -i aws_ec2.yml setup_env.yml -e ansible_python_interpreter=/usr/bin/python3
 
-####
+#### EKS Notes ####
+ 
+1. In order to allow pod running in the EKS cluster which runs kandula, which uses boto3 and need access to ec2 service:
+   In the eks-cluster.tf, in the usage of "eks" module -
+   we set "enable_irsa" to true:
+   enable_irsa = true
+   irsa is "IAM roles for service accounts", can read about it in this link:
+   https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
+   In short:
+   - It create OIDC (open ID connect) provider for our cluster to manage identities
+   - We create policy and role with this policy, and in the role trust we define the assume 
+   role such that the "role" will trust what it gets from the OIDC provider which is
+   a service account in a defined namespace as seen example below.
+   The name of the service accout is the service account name that kandula will use, 
+   we will create this service account for kandula with annotation that the value will
+   be the name of the role
+   "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+         "StringEquals": {
+            "${OIDC_PROVIDER}:sub": "system:serviceaccount:<my-namespace>:<my-service-account>"
+         }
+         }
+
+2. In order to allow Jenkins slaves access EKS cluster need to -
+   a. After the environement is up run the following to update your kubeconfig file 
+      (you can get the cluster_name value from the cluster_name output in terraform)
+      note - after we update the configmap i step b, dont we need to get the updated kubeconfig
+      , kbeconfig get updated - verify this again (before upload to jenkins in step c)
+   aws eks --region=us-east-1 update-kubeconfig --name <cluster_name>
+
+   b. Need to update the aws-auth config map -
+      under "mapRoles" section, need to add entry for the "rolearn" we created
+      for the jenkins slaves (this role provide access to EKS)
+      Example:
+      - rolearn: arn:aws:iam::031034181336:role/eks_role 
+      username: eks_role
+      groups: 
+        - system:masters
+
+   c. After install the k8s plugin in Jenkins master, need to create k8s credentials 
+      and supply the kubeconfig file
 
 aws eks --region=us-east-1 update-kubeconfig --name project-eks
 aws sts get-caller-identity

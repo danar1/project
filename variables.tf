@@ -208,6 +208,8 @@ variable "kubectl_version" {
   description = "kubectl version"
 }
 
+
+
 variable "ec2_role_name" {
   type    = string
   default = "project-ec2-iam-role"
@@ -290,12 +292,16 @@ locals {
     Owner     = "dana"
   }
 
+  # Jenkins
   jenkins_default_name = "jenkins"
   jenkins_home = "/home/ubuntu/jenkins_home"
   jenkins_home_mount = "${local.jenkins_home}:/var/jenkins_home"
   docker_sock_mount = "/var/run/docker.sock:/var/run/docker.sock"
   java_opts = "JAVA_OPTS='-Djenkins.install.runSetupWizard=false'"
 
+  # eks
+  k8s_service_account_namespace = "default"
+  k8s_service_account_name      = "opsschool-sa"
   cluster_name = "project-eks"
 
 }
