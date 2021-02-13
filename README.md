@@ -5,7 +5,7 @@
 
 # Architecture
 
-
+![image info](./images/ops_project_architecture.vpd.png)
 
 ###
 
