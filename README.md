@@ -201,11 +201,53 @@ Add gihhub (GitHub App)
 
 
   # Flow - to add
-  create images with packer
-  Edit terraform.tfvars, set values
-  Create the s3 bucket to hold the state file
+  - create images with packer
+  - Edit terraform.tfvars, set values
+  - Create the s3 bucket to hold the state file
   Deploy the infrastructure [terraform apply]
+   a. After the environement is up run the following to update your kubeconfig file (~/.kube/config)
+      (you can get the cluster_name value from the cluster_name output in terraform)
+   run:
+   aws eks --region=us-east-1 update-kubeconfig --name project-eks
+
+   b. Need to update the aws-auth config map 
+      [to allow jenkins slaves deploy resources in the k8s cluster]
+      Run:
+      kubectl edit configmap aws-auth -n kube-system
+
+      and edit:
+      under "mapRoles" section, need to add entry for the "rolearn" we created
+      for the jenkins slaves (this role provide access to EKS)
+      Example:
+      - "rolearn": arn:aws:iam::783216792412:role/jenkins_role
+        "username": jenkins_role
+        "groups":
+          - system:masters
+
   Explain how to: 
    configure ssh to bastion
    configure jenkins
+   - install k8s plugin
+   - Create k8s credentials:
+     press "Add credentials"
+     In "kind" drop down choose "kubernetes configuration (kubeconfig)
+     Set the "ID" field
+     choose "Edit directly" 
+     copy and past the kubeconfig file which was created during infa deployment 
+     (file path: ~/.kube/config)
+     save changes
+   - Create github app creadensials (need to create the github app first in GH)
+   - Create pipeline job
+     - Job configuration:
+       In the "Pipeline" section choose:
+       Pipeline script from SCM
+       SCM: git
+       Set the repository URL
+       Choose the github app credentials
+       Set the branch (example */master)
+       Save the changes
+    - Run the job
+      To reach kandula - need to get the LB service DNS, run:
+      kubectl get svc 
+
   configure consul with Ansible
