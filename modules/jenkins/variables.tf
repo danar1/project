@@ -28,11 +28,6 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-# variable "nat_gw_object" {
-#   description = "The NAT gw object, the jenkins master depends on"
-#   type        = object({})
-# }
-
 variable "nat_gw_id" {
   description = "The NAT gw id, the jenkins master depends on"
   type        = string

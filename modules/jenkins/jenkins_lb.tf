@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "jenkins" {
   name     = "jenkins-target-group"
   port     = 8080
   protocol = "HTTP"
-  vpc_id   = var.vpc_id # module.vpc.id
+  vpc_id   = var.vpc_id
 
   health_check {
     enabled = true
@@ -33,14 +33,6 @@ resource "aws_lb_target_group" "jenkins" {
 
   tags = merge(var.tags, map("Name", "jenkins-target-group"))
 }
-
-# Dana below instead
-# resource "aws_lb_target_group_attachment" "jenkins" {
-#   count            = length(aws_instance.nginx)
-#   target_group_arn = aws_lb_target_group.jenkins.id
-#   target_id        = var.public_subnet[count.index]
-#   port             = 80
-# }
 
 resource "aws_lb_target_group_attachment" "jenkins" {
   target_group_arn = aws_lb_target_group.jenkins.id

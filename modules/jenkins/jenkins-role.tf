@@ -5,7 +5,6 @@
 # EC2 IAM role
 resource "aws_iam_role" "ec2-iam-role" {
   name = var.jenkins_ec2_role_name
-  # tags = merge(local.common_tags, map("Name", "project-ec2-iam-role"))
   tags = merge(var.tags, map("Name", var.jenkins_ec2_role_name))
 
   assume_role_policy = <<EOF

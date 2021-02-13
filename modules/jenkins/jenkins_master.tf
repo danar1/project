@@ -8,19 +8,15 @@ resource "aws_instance" "jenkins_master" {
   ami                         = "ami-0bc4b672a160308cd"
   # my project jenkins server AMI: ami-0130abd2105a5e1c6, ami-03c2702ee825ff2d5 (this is with k8s and two slaves, jenkins-master-img2, ami-0bc4b672a160308cd jenkins-master-img3)
   instance_type               = "t3.micro"
-  key_name                    = var.key_name # aws_key_pair.project_key.key_name
-  # subnet_id                   = var.private_subnet_ids # module.vpc.private_subnets[0]
-  subnet_id                   = var.private_subnets[0] # module.vpc.private_subnets[0]
+  key_name                    = var.key_name
+  subnet_id                   = var.private_subnets[0]
   associate_public_ip_address = false
 
   tags = merge(var.tags, map("Name", "jenkins-master"))
 
-  # security_groups = ["default", aws_security_group.jenkins-master-sg.name]
-  # security_groups = [aws_security_group.jenkins-master-sg.name]
+  
   vpc_security_group_ids      = [aws_security_group.jenkins-master-sg.id]
-  # depends_on                  = [var.nat_gw] # [module.vpc.nat_gw]
-  # depends_on                  = [var.nat_gw_object] # [module.vpc.nat_gw]
-  depends_on                  = [var.nat_gw_id] # [module.vpc.nat_gw.id]
+  depends_on                  = [var.nat_gw_id]
 
   # user_data                   = <<EOF
   # #!/bin/bash
@@ -43,10 +39,9 @@ resource "aws_instance" "jenkins_master" {
   
   
   connection {
-    bastion_host = var.bastion_public_ips[0] # aws_instance.bastion[0].public_ip
+    bastion_host = var.bastion_public_ips[0]
     host         = self.private_ip
     user         = "ubuntu"
-    # private_key  = file("project_key")
     private_key  = file(var.key_file)
     
   }
