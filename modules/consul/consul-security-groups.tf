@@ -3,6 +3,7 @@
 ##################################################################################
 resource "aws_security_group" "consul-launch-template-sg" {
   name        = "consul-servers-sg"
+  vpc_id      = var.vpc_id
   description = "Allow ssh & consul inbound traffic"
 
   ingress {

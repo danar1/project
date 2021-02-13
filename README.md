@@ -197,3 +197,15 @@ Add gihhub (GitHub App)
   manage jenkins -> Configure system -> go to Slack section
 
   workspace: opsschool
+
+
+
+  # Flow - to add
+  create images with packer
+  Edit terraform.tfvars, set values
+  Create the s3 bucket to hold the state file
+  Deploy the infrastructure [terraform apply]
+  Explain how to: 
+   configure ssh to bastion
+   configure jenkins
+  configure consul with Ansible

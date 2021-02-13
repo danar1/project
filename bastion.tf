@@ -8,24 +8,26 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.bastion-ssh.id]
 
-  tags = merge(local.common_tags, map("Name", "bastion-${count.index + 1}"))
+  # tags = merge(local.common_tags, map("Name", "bastion-${count.index + 1}"))
+  tags = merge(var.tags, map("Name", "bastion-${count.index + 1}"))
 }
 
 resource "aws_security_group" "bastion-ssh" {
   vpc_id = module.vpc.id
-  name   = "bastion-ssh-access"
+  name   = "ssh-to-bastion"
 
-  tags = merge(local.common_tags, map("Name", "ssh-to-bastion"))
+  # tags = merge(local.common_tags, map("Name", "ssh-to-bastion"))
+  tags = merge(var.tags, map("Name", "ssh-to-bastion"))
 }
 
-resource "aws_security_group_rule" "ssh-access" {
-  description       = "bastion allow ssh access from anywhere"
+resource "aws_security_group_rule" "bastion-inbound-allowed-ips" {
+  description       = "bastion allow ssh access from my ip"
   from_port         = 22
   protocol          = "tcp"
   security_group_id = aws_security_group.bastion-ssh.id
   to_port           = 22
   type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = var.bastion_inbound_allowed_ips
 }
 
 resource "aws_security_group_rule" "bastion-outbound-anywhere" {

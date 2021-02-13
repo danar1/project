@@ -17,7 +17,8 @@ resource "aws_instance" "jenkins_agent" {
   # security_groups = ["default", aws_security_group.jenkins-sg.name]
   # security_groups = [aws_security_group.jenkins-sg.name]
   vpc_security_group_ids      = [aws_security_group.jenkins-agent-sg.id]
-  depends_on                  = [var.nat_gw, var.eks_cluster_id]
+  # depends_on                  = [var.nat_gw_object, var.eks_cluster_id]
+  depends_on                  = [var.nat_gw_id, var.eks_cluster_id] # [module.vpc.nat_gw.id]
 
   # connection {
   #   host = aws_instance.jenkins_agent.public_ip
@@ -58,4 +59,4 @@ resource "aws_instance" "jenkins_agent" {
 #       "aws eks --region=${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
 #     ]
 #   }
-# }
+}

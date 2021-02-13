@@ -69,7 +69,7 @@ resource "aws_security_group" "jenkins-lb-sg" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = var.port_80_ips # ["0.0.0.0/0"]
+    cidr_blocks = var.port_80_ips
   }
 
   ingress {

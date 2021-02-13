@@ -4,8 +4,9 @@
 
 # EC2 IAM role
 resource "aws_iam_role" "ec2-iam-role" {
-  name = var.ec2_role_name
-  tags = merge(local.common_tags, map("Name", "project-ec2-iam-role"))
+  name = var.jenkins_ec2_role_name
+  # tags = merge(local.common_tags, map("Name", "project-ec2-iam-role"))
+  tags = merge(var.tags, map("Name", var.jenkins_ec2_role_name))
 
   assume_role_policy = <<EOF
 {
@@ -26,7 +27,7 @@ EOF
 
 # Provides an IAM role inline policy 
 resource "aws_iam_role_policy" "ec2-full-access" {
-  name = var.ec2_policy_name
+  name = var.jenkins_ec2_policy_name
   role = aws_iam_role.ec2-iam-role.name
 
   policy = <<EOF
@@ -55,6 +56,6 @@ EOF
 
 # Instance profile - Create instance profile with the ec2 iam role
 resource "aws_iam_instance_profile" "instance_profile" {
-  name = "${var.ec2_role_name}_instance_profile"
+  name = "${var.jenkins_ec2_role_name}_instance_profile"
   role = aws_iam_role.ec2-iam-role.name
 }

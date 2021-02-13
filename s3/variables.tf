@@ -17,7 +17,7 @@ variable "aws_region" {
   description = "AWS region"
 }
 
-variable "role_name" {
+variable "s3_to_ec2_role_name" {
   type    = string
   # default = "project-ops-ec2-to-s3-iam-role"
 }
@@ -38,7 +38,7 @@ variable "s3_tags" {
   # default     = {}
 }
 
-variable "ec2_iam_role_tags" {
+variable "s3_to_ec2_role_tags" {
   description = "A map of tags to add to all ec2 iam role"
   type        = map(string)
   # default     = {}

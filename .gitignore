@@ -184,3 +184,6 @@ vars.json
 
 # ansible
 .travis.yml
+
+# EKS
+kubeconfig_project-eks

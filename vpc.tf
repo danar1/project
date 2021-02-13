@@ -9,7 +9,8 @@ module "vpc" {
   cidr_block               = var.cidr_block
   azs                      = slice(data.aws_availability_zones.available.names, 0, 2)
   map_public_ip_on_launch  = var.map_public_ip_on_launch
-  tags                     = merge(local.common_tags, {"kubernetes.io/cluster/${local.cluster_name}" = "shared"})
+  # tags                     = merge(local.common_tags, {"kubernetes.io/cluster/${local.cluster_name}" = "shared"})
+  tags                     = merge(var.tags, {"kubernetes.io/cluster/${local.cluster_name}" = "shared"})
   vpc_tags                 = var.vpc_tags
   gw_tags                  = var.gw_tags
   eip_tags                 = var.eip_tags

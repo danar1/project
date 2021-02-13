@@ -8,9 +8,9 @@ module "s3" {
   bucket            = var.bucket
   acl               = var.acl
   versioning        = var.versioning
-  role_name         = var.role_name
+  role_name         = var.s3_to_ec2_role_name
   s3_policy_name    = var.s3_policy_name
   tags              = var.tags
   s3_tags           = var.s3_tags
-  ec2_iam_role_tags = var.ec2_iam_role_tags
+  s3_to_ec2_role_tags = var.s3_to_ec2_role_tags
 }

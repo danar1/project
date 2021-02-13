@@ -28,9 +28,14 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-variable "nat_gw_object" {
-  description = "The NAT gw object, the jenkins master depends on"
-  type        = object
+# variable "nat_gw_object" {
+#   description = "The NAT gw object, the jenkins master depends on"
+#   type        = object({})
+# }
+
+variable "nat_gw_id" {
+  description = "The NAT gw id, the jenkins master depends on"
+  type        = string
 }
 
 variable "bastion_public_ips" {
@@ -57,6 +62,19 @@ variable "eks_cluster_id" {
     description = "The EKS cluster id"
   type    = string
 }
+
+variable "jenkins_ec2_policy_name" {
+  description = "Jenkins ec2 policy name"
+  type        = string
+}
+
+variable "jenkins_ec2_role_name" {
+  description = "Jenkins ec2 role name"
+  type        = string
+}
+
+
+
 
 
 
