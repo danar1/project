@@ -74,3 +74,8 @@ output "consul_alb_dns" {
 output "consul_servers_private_ips" {
   value = module.consul.consul_servers_private_ips
 }
+
+output "ansible_private_ip" {
+  description = "ansible private ip"
+  value       = module.ansible.ansible_private_ip
+}

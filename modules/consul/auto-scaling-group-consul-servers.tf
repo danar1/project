@@ -19,7 +19,8 @@ resource "aws_launch_template" "consul-launch-template" {
   tag_specifications {
     resource_type = "instance"
 
-    tags = merge(var.tags, {"Name" = "consul-server", "consul_server" = "true"})
+    tags = merge(var.tags, {"Name" = "consul-server", "Consul" = "consul-server"})
+  
   }
 }
 

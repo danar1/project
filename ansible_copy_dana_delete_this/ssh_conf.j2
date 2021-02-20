@@ -1,6 +1,6 @@
 StrictHostKeyChecking=no
 
-{% for node in nodes %}
+{% for node in groups['consul_cluster'] %}
 Host {{ node }}
   HostName {{ node }}
   IdentityFile {{ server_identity }}

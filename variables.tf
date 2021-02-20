@@ -182,6 +182,37 @@ variable "bastion_inbound_allowed_ips" {
   type        = list(string) 
 }
 
+# ansible
+variable "ansible_ami" {
+  description = "Ansible AMI"
+  type        = string
+}
+
+variable "ansible_instance" {
+  description = "instance type"
+  type        = string
+}
+
+variable "ansible_count" {
+  description = "Number of ansible instances"
+  type        = number
+}
+
+variable "ansible_ec2_role_name" {
+  description = "ansible ec2 role name"
+  type        = string
+}
+
+variable "ansible_ec2_policy_name" {
+  description = "ansible ec2 policy name"
+  type        = string
+}
+
+variable "ansible_folder" {
+  description = "ansible folder path which contains the roles, playbooks etc"
+  type        = string
+}
+
 
 
 ##################################################################################

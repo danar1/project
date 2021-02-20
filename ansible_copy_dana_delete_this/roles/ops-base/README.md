@@ -1,7 +1,8 @@
-apache
+ops-base
 =========
 
-Install apache2
+Base setup for EC2 instances:
+- install consul
 
 Requirements
 ------------
@@ -11,7 +12,8 @@ Requirements
 Role Variables
 --------------
 
-
+- consul_version - Set consul version [default 1.8.5]
+- consul_servers_count - set num of consul servers [default 3]
 
 Dependencies
 ------------
@@ -23,17 +25,16 @@ Example Playbook
 
 ```
 ---
-- name: Install apache2
-  hosts: consul_agents
+- name: Install Consul
+  hosts: consul_cluster
   become: true
-  vars:
-    - consul_agent_name_tag: "consul-agent"
   roles:
-    - role: apache
-      when:
-        - hostvars[inventory_hostname].tags.Name is defined
-        - hostvars[inventory_hostname].tags.Name == consul_agent_name_tag
+    - role: ops-base
+      # vars:
+      #   consul_version: "1.8.5"
+      #   consul_servers_count: "3"
 ```
+
 
 Run
 ----------------
@@ -51,4 +52,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Dana Regev via opsschool

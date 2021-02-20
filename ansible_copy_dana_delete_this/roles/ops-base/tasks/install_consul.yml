@@ -48,14 +48,14 @@
 
 - name: Setup Consul
   template:
-    src: "{{ (hostvars[inventory_hostname].tags.Consul == consul_agent_name_tag) | ternary('consul_agent_config.j2', 'consul_server_config.j2') }}"
+    src: "{{ (hostvars[inventory_hostname].tags.Name == consul_agent_name_tag) | ternary('consul_agent_config.j2', 'consul_server_config.j2') }}"
     dest: /etc/consul.d/config.json
     owner: consul
     group: consul
     backup: yes
   when:
-    - hostvars[inventory_hostname].tags.Consul is defined
-    - (hostvars[inventory_hostname].tags.Consul == consul_agent_name_tag) or (hostvars[inventory_hostname].tags.Consul == consul_server_name_tag)
+    - hostvars[inventory_hostname].tags.Name is defined
+    - (hostvars[inventory_hostname].tags.Name == consul_agent_name_tag) or (hostvars[inventory_hostname].tags.Name == consul_server_name_tag)
 
 - name: Configure consul service
   template:
@@ -63,8 +63,8 @@
     dest: /etc/systemd/system/consul.service
     backup: yes
   when:
-    - hostvars[inventory_hostname].tags.Consul is defined
-    - (hostvars[inventory_hostname].tags.Consul == consul_agent_name_tag) or (hostvars[inventory_hostname].tags.Consul == consul_server_name_tag)
+    - hostvars[inventory_hostname].tags.Name is defined
+    - (hostvars[inventory_hostname].tags.Name == consul_agent_name_tag) or (hostvars[inventory_hostname].tags.Name == consul_server_name_tag)
   notify:
     - Start consul
 

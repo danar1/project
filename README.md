@@ -251,3 +251,30 @@ Add gihhub (GitHub App)
       kubectl get svc 
 
   configure consul with Ansible
+  ansible:
+  after deploy the infra with terraform, ssh to the ansible instance (via bastion) - to do use Adams' method 
+  on ansible instance:
+  1. cd ~/ansible
+  <!-- 2. Configure ssh  - will not configure ssh, we will use --private-key cli option instead in each ansible comand (because when i run the yml to configur ssh in ~/.ssh/config, it configure the dns name,
+  - maybe need to change the jinja2 template that for each node in the consul_clster group, will take the private_ip, because otherwise it uses the private dns name of each instance, and this s not reachable, no resolving, so need to use private ips instead of the private dns name)
+    [this will create ssh configuration for each node in the consul cluster i.e 3 consul-slaves and one consul agent which is the jenkins-master instance]: -->
+
+    <!-- ansible-playbook -i aws_ec2.yml configure_ssh.yml -->
+
+    <!-- BTW, here is how to see setup:
+    ansible -i aws_ec2.yml --private-key ~/.ssh/project_key consul_agents -m setup -->
+
+  2. Install consul
+    ansible-playbook -i aws_ec2.yml --private-key ~/.ssh/project_key setup_env.yml
+
+   # issues:
+   a. With Jenkins when apache role failed because some issue with apt aupdate
+      on jenkins, issue wih the url of some repo .. need to check again if not temp problem
+   b. With consul - 
+      1. Was not able to get response from the console load balancer -
+         need to see the security group of the consul lb and also the consul servers
+
+      2. Need to add to the consul servers security group all the port Miki showed:
+         8300 tcp / 8302 udp and tcp / 8600 udp and tcp 
+      3. Need to install helm and use the hep chart for consul  - 01:10:40 in Miki last video class
+     

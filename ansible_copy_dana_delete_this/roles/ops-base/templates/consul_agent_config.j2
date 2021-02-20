@@ -1,0 +1,12 @@
+{
+  "advertise_addr": "{{ hostvars[inventory_hostname].private_ip_address }}",
+  "data_dir": "{{ consul_data_dir }}",
+  "datacenter": "{{ consul_datacenter }}",
+  "encrypt": "{{ consul_encrypt }}",
+  "disable_remote_exec": {{ consul_disable_remote_exec }},
+  "disable_update_check": {{ consul_disable_update_check }},
+  "leave_on_terminate": {{ consul_leave_on_terminate }},
+  "retry_join": {{ consul_retry_join }},
+  "enable_script_checks": {{ consul_enable_script_checks }},
+  "server": false
+}

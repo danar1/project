@@ -27,7 +27,7 @@ Example Playbook
   hosts: consul_agents
   become: true
   vars:
-    - consul_agent_name_tag: "consul-agent"
+    - consul_agent_name_tag: "opsschool-agent"
   roles:
     - role: apache
       when:

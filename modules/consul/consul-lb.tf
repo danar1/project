@@ -30,8 +30,15 @@ resource "aws_lb_target_group" "consul-alb-target-group" {
   vpc_id   = var.vpc_id
 
   health_check {
-    enabled = true
-    path    = "/"
+    enabled             = true
+    path                = "/"
+    port                = 8500
+    interval            = 30
+    timeout             = 5
+    unhealthy_threshold = 2
+    healthy_threshold   = 5
+    matcher             = 301   # todo- understand why response code is 301 and not 200
+
   }
 
   tags = merge(var.tags, map("Name", "consul-alb-target-group"))

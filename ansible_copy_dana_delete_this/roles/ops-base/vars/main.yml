@@ -13,8 +13,8 @@ consul_download_url: "https://releases.hashicorp.com/consul/{{ consul_version }}
 
 consul_zip_path: "/tmp/consul.zip"
 consul_bin_path: "/usr/local/bin/"
-consul_agent_name_tag: "consul-agent"
-consul_server_name_tag: "consul-server"
+consul_agent_name_tag: "opsschool-agent"
+consul_server_name_tag: "opsschool-server"
 
 # condul configuration
 consul_data_dir: "/opt/consul"
@@ -23,7 +23,7 @@ consul_encrypt: "uDBV4e+LbFW3019YKPxIrg=="
 consul_disable_remote_exec: "true"
 consul_disable_update_check: "true"
 consul_leave_on_terminate: "true"
-consul_retry_join: '["provider=aws tag_key=Consul tag_value=consul-server"]'
+consul_retry_join: '["provider=aws tag_key=consul_server tag_value=true"]'
 consul_enable_script_checks: "true"
 consul_server_bootstrap_expect: "{{ consul_servers_count }}"
 consul_server_ui: "true"

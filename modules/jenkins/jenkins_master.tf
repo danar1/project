@@ -5,14 +5,16 @@ resource "aws_instance" "jenkins_master" {
   # ami                         = "ami-07d0cf3af28718ef8" 
   # ami                         = "ami-0130abd2105a5e1c6" 
   # ami                         = "ami-03c2702ee825ff2d5" 
-  ami                         = "ami-0bc4b672a160308cd"
+  # ami                         = "ami-0bc4b672a160308cd" # This was good, before i created with final project job
+  ami                         = "ami-01f8716972256503a"
   # my project jenkins server AMI: ami-0130abd2105a5e1c6, ami-03c2702ee825ff2d5 (this is with k8s and two slaves, jenkins-master-img2, ami-0bc4b672a160308cd jenkins-master-img3)
   instance_type               = "t3.micro"
   key_name                    = var.key_name
   subnet_id                   = var.private_subnets[0]
   associate_public_ip_address = false
 
-  tags = merge(var.tags, map("Name", "jenkins-master"))
+  # tags = merge(var.tags, map("Name", "jenkins-master"))
+  tags = merge(var.tags, {"Name" = "jenkins-master", "Consul" = "consul-agent"})
 
   
   vpc_security_group_ids      = [aws_security_group.jenkins-master-sg.id]

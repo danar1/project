@@ -5,7 +5,7 @@
 
 module "jenkins" {
   source                  = "./modules/jenkins"
-  ssh_security_group_ids  = [aws_security_group.bastion-ssh.id]
+  ssh_security_group_ids  = [aws_security_group.bastion-ssh.id, module.ansible.ansible_security_group.id]
   # tags                    = local.common_tags
   tags                    = var.tags
   vpc_id                  = module.vpc.id
