@@ -1,0 +1,20 @@
+{
+  "service": {
+    "name": "kibana",
+    "id": "kibana",
+    "tags": [
+      "kibana"
+    ],
+    "port": 5601,
+    "check": [
+     {
+      "id": "api",
+      "name": "HTTP API on port 5601",
+      "http": "http://localhost:5601",
+      "method": "GET",
+      "interval": "10s",
+      "timeout": "1s"
+    }
+   ]
+}
+}

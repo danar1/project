@@ -1,0 +1,8 @@
+- name: Register prometheus service in consul
+  template:
+    src: prometheus_register_consul.j2
+    dest: "{{ consul_prometheus_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

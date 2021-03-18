@@ -1,0 +1,8 @@
+- name: Register grafana service in consul
+  template:
+    src: grafana_register_consul.j2
+    dest: "{{ consul_grafana_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

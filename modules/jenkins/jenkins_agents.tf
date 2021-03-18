@@ -11,8 +11,9 @@ resource "aws_instance" "jenkins_agent" {
   associate_public_ip_address = false
   key_name                    = var.key_name
   iam_instance_profile        = aws_iam_instance_profile.instance_profile.name
-  vpc_security_group_ids      = [aws_security_group.jenkins-agent-sg.id]
-  tags = merge(var.tags, map("Name", "jenkins-agent-${count.index}"))
+  vpc_security_group_ids      = [aws_security_group.jenkins-agent-sg.id,  var.consul-security-group]
+  # tags = merge(var.tags, map("Name", "jenkins-agent-${count.index}"))
+  tags = merge(var.tags, {"Name" = "jenkins-agent-${count.index}", "Consul" = "consul-agent"})
   depends_on                  = [var.nat_gw_id, var.eks_cluster_id]
 
   

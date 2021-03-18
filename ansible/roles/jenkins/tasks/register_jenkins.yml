@@ -1,0 +1,8 @@
+- name: Register jenkins service in consul
+  template:
+    src: jenkins_register_consul.j2
+    dest: "{{ consul_jenkins_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

@@ -1,0 +1,13 @@
+StrictHostKeyChecking=no
+
+{% for node in groups['consul_cluster'] %}
+Host {{ node }}
+  HostName {{ node }}
+  IdentityFile {{ server_identity }}
+  {% if node in groups['jenkin_agents'] %}
+  User ec2-user
+  {% else %}
+  User ubuntu
+  {% endif %}
+
+{% endfor %}

@@ -9,7 +9,7 @@ variable "instance_type" {
 }
 
 variable "subnet_ids" {
-  description = "list of subnet ids"
+  description = "list of public subnet ids"
   type        = list(string)
 }
 

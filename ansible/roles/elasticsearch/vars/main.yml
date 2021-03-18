@@ -1,0 +1,8 @@
+---
+#############################
+# vars file for elasticsearch
+#############################
+
+# consul
+consul_config_folder: /etc/consul.d
+consul_elasticsearch_config_path: "{{ consul_config_folder }}/elasticsearch.json"

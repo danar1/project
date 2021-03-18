@@ -1,0 +1,3 @@
+---
+# tasks file for elasticsearch
+- include: register_elasticsearch.yml

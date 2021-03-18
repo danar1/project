@@ -1,0 +1,8 @@
+- name: Register elasticsearch service in consul
+  template:
+    src: elasticsearch_register_consul.j2
+    dest: "{{ consul_elasticsearch_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

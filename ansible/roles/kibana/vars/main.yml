@@ -1,0 +1,8 @@
+---
+#######################
+# vars file for kibana
+#######################
+
+# consul
+consul_config_folder: /etc/consul.d
+consul_kibana_config_path: "{{ consul_config_folder }}/kibana.json"

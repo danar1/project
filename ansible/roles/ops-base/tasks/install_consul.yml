@@ -8,6 +8,15 @@
     state: latest
     update_cache: yes
   loop: "{{ dependencies_pkgs_install }}"
+  when: ansible_distribution == "Ubuntu"
+
+- name: Installing dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop: "{{ dependencies_pkgs_install }}"
+  when: ansible_distribution == "Amazon"
 
 - name: Configuring dnsmasq
   template:
@@ -17,6 +26,7 @@
   notify:
     - Restart dnsmasq
 
+# Todo - need to see what to do with the jenkins-agents which are Amazon Linux
 - name: Configuring systemd resolved.conf
   template:
     src: systemd_resolved_conf.j2
@@ -24,6 +34,7 @@
     backup: yes
   notify:
     - Restart resolved
+  when: ansible_distribution == "Ubuntu"
 
 - name: Fetching Consul
   get_url:

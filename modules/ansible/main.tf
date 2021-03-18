@@ -22,6 +22,14 @@ resource "aws_instance" "ansible" {
     private_key  = file(var.key_file)
   }
 
+  # connection {
+  #   bastion_host = var.bastion_public_ips[0]
+  #   host         = self.private_ip
+  #   user         = "ubuntu"
+  #   private_key  = file(var.key_file)
+    
+  # }
+
   provisioner "file" {
     source      = var.ansible_folder
     destination = "/home/ubuntu"
@@ -29,7 +37,11 @@ resource "aws_instance" "ansible" {
 
   provisioner "file" {
     source      = var.key_file
-    destination = "/home/ubuntu/.ssh"
+    destination = "/home/ubuntu/.ssh/${var.key_file}"
+  }
+
+  provisioner "remote-exec" {
+    inline = ["sudo chmod 400 /home/ubuntu/.ssh/${var.key_file}"]
   }
 }
 

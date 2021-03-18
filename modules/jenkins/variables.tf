@@ -68,6 +68,18 @@ variable "jenkins_ec2_role_name" {
   type        = string
 }
 
+variable "consul-security-group" {
+  description = "consul security group id"
+  type        = string
+}
+
+variable "consul-role" {
+  description = "consul role name"
+  type        = string
+}
+
+
+
 
 
 

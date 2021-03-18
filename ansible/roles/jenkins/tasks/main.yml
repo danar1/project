@@ -1,0 +1,3 @@
+---
+# tasks file for jenkins
+- include: register_jenkins.yml

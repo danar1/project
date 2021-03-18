@@ -7,7 +7,7 @@ module "consul" {
   source                 = "./modules/consul" 
   consul_servers_count   = var.consul_servers_count
   instance_type          = var.consul_instance_type
-  subnet_ids             = module.vpc.private_subnets
+  subnet_ids             = module.vpc.public_subnets
   key_name               = aws_key_pair.project_key.key_name
   ssh_security_group_ids = [aws_security_group.bastion-ssh.id, module.ansible.ansible_security_group.id]
   port_8500_ips          = var.port_8500_ips

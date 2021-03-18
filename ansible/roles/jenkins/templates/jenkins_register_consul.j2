@@ -1,0 +1,20 @@
+{
+  "service": {
+    "name": "jenkins",
+    "id": "jenkins-master",
+    "tags": [
+      "jenkins"
+    ],
+    "port": 8080,
+    "check": [
+     {
+      "id": "api",
+      "name": "HTTP API on port 8080",
+      "http": "http://localhost:8080",
+      "method": "GET",
+      "interval": "10s",
+      "timeout": "1s"
+    }
+   ]
+}
+}

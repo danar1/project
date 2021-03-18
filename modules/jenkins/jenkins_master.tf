@@ -12,12 +12,15 @@ resource "aws_instance" "jenkins_master" {
   key_name                    = var.key_name
   subnet_id                   = var.private_subnets[0]
   associate_public_ip_address = false
+  iam_instance_profile {
+    name = var.consul-role
+  }
 
   # tags = merge(var.tags, map("Name", "jenkins-master"))
   tags = merge(var.tags, {"Name" = "jenkins-master", "Consul" = "consul-agent"})
 
   
-  vpc_security_group_ids      = [aws_security_group.jenkins-master-sg.id]
+  vpc_security_group_ids      = [aws_security_group.jenkins-master-sg.id, var.consul-security-group]
   depends_on                  = [var.nat_gw_id]
 
   # user_data                   = <<EOF

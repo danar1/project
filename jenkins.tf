@@ -21,6 +21,8 @@ module "jenkins" {
   jenkins_agent_count     = var.jenkins_agent_count   
   eks_cluster_id          = module.eks.cluster_id  
   jenkins_ec2_policy_name = var.jenkins_ec2_policy_name
-  jenkins_ec2_role_name   = var.jenkins_ec2_role_name    
+  jenkins_ec2_role_name   = var.jenkins_ec2_role_name   
+  consul-security-group   = module.consul.consul_security_group 
+  consul-role             = module.consul.consul_role
   
 }

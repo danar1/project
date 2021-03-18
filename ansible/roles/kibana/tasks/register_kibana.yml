@@ -1,0 +1,8 @@
+- name: Register kibana service in consul
+  template:
+    src: kibana_register_consul.j2
+    dest: "{{ consul_kibana_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

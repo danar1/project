@@ -4,12 +4,38 @@
   become: true
   vars:
     - consul_agent_name_tag: "consul-agent"
+    - jenkins_master_name_tag: "jenkins-master"
+    - prometheus_name_tag: "prometheus"
+    - grafana_name_tag: "grafana"
+    - kibana_name_tag: "kibana"
+    - elasticsearch_name_tag: "elasticsearch"
+    
   roles:
     - role: ops-base
       # vars:
       #   consul_version: "1.8.5"
       #   consul_servers_count: "3"
-    - role: apache
+    # - role: apache
+    #   when:
+    #     - hostvars[inventory_hostname].tags.Consul is defined
+    #     - hostvars[inventory_hostname].tags.Consul == consul_agent_name_tag
+    - role: jenkins
       when:
-        - hostvars[inventory_hostname].tags.Consul is defined
-        - hostvars[inventory_hostname].tags.Consul == consul_agent_name_tag
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == jenkins_master_name_tag
+    - role: prometheus
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == prometheus_name_tag
+    - role: grafana
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == grafana_name_tag
+    - role: kibana
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == kibana_name_tag
+    - role: elasticsearch
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == elasticsearch_name_tag

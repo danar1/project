@@ -7,6 +7,7 @@ groups:
   consul_servers: "'consul-server' in tags.Consul"
   consul_agents: "'consul-agent' in tags.Consul"
   consul_cluster: ('consul-server' in tags.Consul) or ('consul-agent' in tags.Consul)
-compose:
+  jenkin_agents: "'jenkins-agent' in tags.Name"
+#compose:
   # set the ansible_host variable to connect with the private IP address without changing the hostname
-  ansible_host: private_ip_address
+#  ansible_host: private_ip_address

@@ -6,10 +6,15 @@ resource "aws_instance" "bastion" {
   key_name                    = aws_key_pair.project_key.key_name
   subnet_id                   = module.vpc.public_subnets[count.index] 
   associate_public_ip_address = true
-  vpc_security_group_ids      = [aws_security_group.bastion-ssh.id]
+  vpc_security_group_ids      = [aws_security_group.bastion-ssh.id, module.consul.consul_security_group]
+
+  iam_instance_profile {
+    name = module.consul.consul_role
+  }
 
   # tags = merge(local.common_tags, map("Name", "bastion-${count.index + 1}"))
-  tags = merge(var.tags, map("Name", "bastion-${count.index + 1}"))
+  # tags = merge(var.tags, map("Name", "bastion-${count.index + 1}"))
+  tags = merge(var.tags, {"Name" = "bastion-${count.index + 1}", "Consul" = "consul-agent"})
 }
 
 resource "aws_security_group" "bastion-ssh" {

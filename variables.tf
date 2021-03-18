@@ -213,6 +213,18 @@ variable "ansible_folder" {
   type        = string
 }
 
+# monitoring - grafana
+variable "port_3000_ips" {
+  description = "list of ips allowed to access grafana ALB"
+  type        = list(string)
+}
+
+# logging - kibana
+variable "port_5601_ips" {
+  description = "list of ips allowed to access kibana ALB"
+  type        = list(string)
+}
+
 
 
 ##################################################################################

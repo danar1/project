@@ -5,7 +5,7 @@
 
 # Architecture
 
-![image info](./images/ops_project_architecture.vpd.png)
+![image info](./images/ops_project_architecture18_3.vpd.png)
 
 ###
 
@@ -219,10 +219,10 @@ Add gihhub (GitHub App)
       under "mapRoles" section, need to add entry for the "rolearn" we created
       for the jenkins slaves (this role provide access to EKS)
       Example:
-      - "rolearn": arn:aws:iam::783216792412:role/jenkins_role
-        "username": jenkins_role
-        "groups":
-          - system:masters
+      - "groups":
+        - "system:masters"
+        "rolearn": "arn:aws:iam::783216792412:role/jenkins_role"
+        "username": "jenkins_role"
 
   Explain how to: 
    configure ssh to bastion
@@ -257,6 +257,19 @@ Add gihhub (GitHub App)
   1. cd ~/ansible
   <!-- 2. Configure ssh  - will not configure ssh, we will use --private-key cli option instead in each ansible comand (because when i run the yml to configur ssh in ~/.ssh/config, it configure the dns name,
   - maybe need to change the jinja2 template that for each node in the consul_clster group, will take the private_ip, because otherwise it uses the private dns name of each instance, and this s not reachable, no resolving, so need to use private ips instead of the private dns name)
+  note - DNS resolution issue, it seems that adter further investoigation , i saw trhat in my default VPC
+  there are two instances that can resolve one another private DNS and so i compared the default VPC 
+  "details" with my project VPC details and the only differance was "Edit DNS hostnames" set to enabled
+  in the default VPC and in my project VPC it was set to disabled so i changed it to enabled in my 
+  project VPC and then it worked, i was able to use the dynamic iventory from ansible which
+  uses the private DNS of the instances and i had name resolution 
+  BUT i think it is might not related to the change - maybe we need to wait a bit after deploy the VPC 
+  , till the name resolution take effect? - if it will turn out that the enabled i did for the "Edit DNS hostnames" then i will need to add this to the VPC module so it wil be set to "enabled" durring deployment
+   i added this setting to the VPC module : enable_dns_hostnames = true
+   old: need to figure out why i is not reachable because i use the default DHCP option set which
+   is assigned to the VPC by default and a DNS resolution suppose to work in the VPC 
+   https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#AmazonDNS
+   https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html
     [this will create ssh configuration for each node in the consul cluster i.e 3 consul-slaves and one consul agent which is the jenkins-master instance]: -->
 
     <!-- ansible-playbook -i aws_ec2.yml configure_ssh.yml -->
@@ -264,8 +277,21 @@ Add gihhub (GitHub App)
     <!-- BTW, here is how to see setup:
     ansible -i aws_ec2.yml --private-key ~/.ssh/project_key consul_agents -m setup -->
 
+    # After providing any required options, you can view the populated inventory with:
+    # ansible-inventory -i aws_ec2.yml --graph
+
+    # Note - no need to explicitly use the --private-key ~/.ssh/project_key when ansible need to 
+    # reach to configure instances
+    # The DNS resolution is now working so i returned the ssh_config.j2, consigure_ssh.yml and external_vars.yml files to ansible folder and we create the ~/.ssh/config file like so:
+     ansible-playbook -i aws_ec2.yml configure_ssh.yml
+
+     and then ansible can rach all the instances in the dynamic inventory via ssh , using the private DNS names of the instances
+     We also just need to configure the ~/.ssh/project_key to chmod 400
+     sudo chmod 400 /home/ubuntu/.ssh/project_key 
+
   2. Install consul
-    ansible-playbook -i aws_ec2.yml --private-key ~/.ssh/project_key setup_env.yml
+    <!-- ansible-playbook -i aws_ec2.yml --private-key ~/.ssh/project_key setup_env.yml -->
+    ansible-playbook -i aws_ec2.yml setup_env.yml
 
    # issues:
    a. With Jenkins when apache role failed because some issue with apt aupdate
@@ -277,4 +303,59 @@ Add gihhub (GitHub App)
       2. Need to add to the consul servers security group all the port Miki showed:
          8300 tcp / 8302 udp and tcp / 8600 udp and tcp 
       3. Need to install helm and use the hep chart for consul  - 01:10:40 in Miki last video class
-     
+
+ 
+ # Install helm
+ 1. install helm localy 
+    taken from: https://helm.sh/docs/intro/install/
+    on mac:
+    brew install helm
+ 2. Add the HashiCorp Helm Repository:
+    helm repo add hashicorp https://helm.releases.hashicorp.com
+    taken from:
+   https://www.consul.io/docs/k8s/installation/install
+3. Ensure you have access to the consul chart:
+   $ helm search repo hashicorp/consul
+4. Create ossip encription secret 
+(note - when we create consul cluster, we use hash key that the servers are using to do gossip,
+in consul config file there is 'consul_encrypt' that there is a command in consul that allow create this key so that so that all the gossig between consul servers will be encrypted by using this key) 
+kubectl create secret generic consul-gossip-encryption-key --from-literal=key="uDBV4e+LbFW3019YKPxIrg=="
+5. update values.yaml file:
+
+
+
+
+# Consul
+For all instances running consul agent in client mode need to:
+- Add security group to allow consul comunication:  consul-servers-sg
+- Add the role 'consul-join' to allow the consul agent to do 'describe instances' to discover the 
+  consul cluster
+  i manually added to jenkins-master instance and to kibana instance and verified in  
+  the log that they both joined the cluster
+  sudo journalctl -fu consul
+
+
+# Route 53
+Create *private* hosted zone project.internal
+Associate this hosted zone with the project vpc
+   Note: at this point, after we created the hosted zone, we see 2 records
+         SOA - start of authority record which holds information aboute the zone
+         NS - name server records which holds all the authoritative nameservers 
+Add records to the hosted zone:
+record is a server name mapped to its' *private) ip adress
+example:
+grapana  10.0.100.30
+
+Then we will be able to reach grafana by its' FQDN:
+grafana.opsschool.internal
+
+Note:
+if we use private hosted zone we have to use the DHCP options sets with the 
+domain name server set to 'AmazonProvidedDNS' (this actualy is the DNS server of our VPC,
+and its' adress will always be the second address in the VPC address range, so for example
+if the address range is 10.0.0.0/16 then the ip od the DNS server of our VPC will be 10.0.0.2)
+i.e use the default DHCP options set
+
+  
+
+   

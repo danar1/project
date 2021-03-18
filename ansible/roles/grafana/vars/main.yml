@@ -1,0 +1,8 @@
+---
+#######################
+# vars file for grafana
+#######################
+
+# consul
+consul_config_folder: /etc/consul.d
+consul_grafana_config_path: "{{ consul_config_folder }}/grafana.json"
