@@ -1,0 +1,8 @@
+- name: Register mysql service in consul
+  template:
+    src: mysql_register_consul.j2
+    dest: "{{ consul_mysql_config_path }}"
+    owner: consul
+    group: consul
+  notify:
+    - Reload consul

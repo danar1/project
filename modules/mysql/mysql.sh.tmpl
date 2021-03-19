@@ -1,0 +1,68 @@
+#!/bin/bash
+set -e
+
+echo "INFO: userdata started"
+
+# install mysql
+sudo apt update
+sudo apt install mysql-server -y
+
+sudo cp /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf.BCK
+sudo sed -i 's/bind-addres/#bind-addres/g' /etc/mysql/mysql.conf.d/mysqld.cnf
+
+sudo bash -c 'cat <<\EOF >> /etc/mysql/mysql.conf.d/mysqld.cnf
+bind-address = 0.0.0.0
+EOF'
+
+sudo systemctl stop mysql
+sudo systemctl start mysql
+
+
+# filebeat
+wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.11.0-amd64.deb
+dpkg -i filebeat-*.deb
+
+
+sudo mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.BCK
+
+sudo bash -c 'cat <<\EOF > /etc/filebeat/filebeat.yml
+filebeat.inputs:
+  - type: log
+    enabled: false
+    paths:
+      - /var/log/auth.log
+
+filebeat.modules:
+  - module: system
+    syslog:
+      enabled: false
+    auth:
+      enabled: false
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.dashboards.enabled: false
+
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat-*"
+setup.template.settings:
+  index.number_of_shards: 1
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts: [ "elasticsearch.service.consul:9200" ]
+  index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+## OR
+#output.logstash:
+#  hosts: [ "127.0.0.1:5044" ]
+EOF'
+
+sudo systemctl start filebeat
+
+echo "INFO: userdata finished"

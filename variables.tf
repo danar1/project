@@ -225,6 +225,12 @@ variable "port_5601_ips" {
   type        = list(string)
 }
 
+# mysql
+variable "port_3306_ips" {
+  description = "list of ips allowed to access mysql"
+  type        = list(string)
+}
+
 
 
 ##################################################################################
