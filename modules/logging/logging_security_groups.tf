@@ -67,8 +67,8 @@ resource "aws_security_group" "kibana-lb-sg" {
   description = "Allow kibana inbound traffic"
 
   ingress {
-    from_port = 5601
-    to_port = 5601
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks = var.port_5601_ips
   }

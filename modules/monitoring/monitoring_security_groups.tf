@@ -67,8 +67,8 @@ resource "aws_security_group" "grafana-lb-sg" {
   description = "Allow grafana inbound traffic"
 
   ingress {
-    from_port = 3000
-    to_port = 3000
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks = var.port_3000_ips
   }

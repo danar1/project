@@ -2,7 +2,7 @@ resource "aws_lb" "grafana" {
   name                       = "grafana-alb"
   internal                   = false
   load_balancer_type         = "application"
-  subnets                    = var.private_subnets
+  subnets                    = var.subnet_ids
   security_groups            = [aws_security_group.grafana-lb-sg.id]
 
   tags = merge(var.tags, map("Name", "grafana-alb"))
@@ -11,7 +11,7 @@ resource "aws_lb" "grafana" {
 
 resource "aws_lb_listener" "grafana" {
   load_balancer_arn = aws_lb.grafana.arn
-  port              = 3000
+  port              = 80
   protocol          = "HTTP"
 
   default_action {

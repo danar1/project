@@ -356,6 +356,30 @@ and its' adress will always be the second address in the VPC address range, so f
 if the address range is 10.0.0.0/16 then the ip od the DNS server of our VPC will be 10.0.0.2)
 i.e use the default DHCP options set
 
+
+# Loging
+Configure kibana to reach elasticsearch on different instance
+sudo vim /etc/kibana/kibana.yml
+Add:
+  elasticsearch.hosts: [ "http://elasticsearch.service.consul:9200" ]
+sudo systemctl stop kibana
+sudo systemctl start kibana
+check status:
+   sudo systemctl status kibana
+OR:
+  sudo journalctl -fu kibana
+
+Elasticsearch - 
+configure it to listen on all interfaces (not just loopback) 
+to allow kibana reach it
+
+sudo bash -c 'cat <<\EOF >> /etc/elasticsearch/elasticsearch.yml
+transport.host: localhost
+transport.tcp.port: 9300
+http.port: 9200
+network.host: 0.0.0.0
+EOF'
+
   
 
    

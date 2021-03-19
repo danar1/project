@@ -7,7 +7,20 @@ echo "INFO: userdata started"
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.10.2-amd64.deb
 dpkg -i elasticsearch-*.deb
 systemctl enable elasticsearch
-systemctl start elasticsearch
+
+# Dana added
+sudo cp /etc/elasticsearch/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml.BCK
+
+sudo bash -c 'cat <<\EOF >> /etc/elasticsearch/elasticsearch.yml
+transport.host: localhost
+transport.tcp.port: 9300
+http.port: 9200
+network.host: 0.0.0.0
+EOF'
+
+# sudo systemctl stop elasticsearch
+sudo systemctl start elasticsearch
+
 
 # # kibana
 # wget https://artifacts.elastic.co/downloads/kibana/kibana-oss-7.10.2-amd64.deb

@@ -5,7 +5,8 @@
 
 module "monitor" {
   source                 = "./modules/monitoring" 
-  private_subnets        = module.vpc.private_subnets
+  # private_subnets        = module.vpc.private_subnets
+  subnet_ids             = module.vpc.public_subnets
   ssh_security_group_ids = [aws_security_group.bastion-ssh.id, module.ansible.ansible_security_group.id]
   key_name               = aws_key_pair.project_key.key_name
   key_file               = var.key_file

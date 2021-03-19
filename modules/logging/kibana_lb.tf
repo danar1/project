@@ -2,7 +2,7 @@ resource "aws_lb" "kibana" {
   name                       = "kibana-alb"
   internal                   = false
   load_balancer_type         = "application"
-  subnets                    = var.private_subnets
+  subnets                    = var.subnet_ids
   security_groups            = [aws_security_group.kibana-lb-sg.id]
 
   tags = merge(var.tags, map("Name", "kibana-alb"))
@@ -11,7 +11,7 @@ resource "aws_lb" "kibana" {
 
 resource "aws_lb_listener" "kibana" {
   load_balancer_arn = aws_lb.kibana.arn
-  port              = 5601
+  port              = 80
   protocol          = "HTTP"
 
   default_action {
@@ -28,7 +28,7 @@ resource "aws_lb_target_group" "kibana" {
 
   health_check {
     enabled = true
-    path    = "/"
+    path    = "/app/home"
   }
 
   tags = merge(var.tags, map("Name", "kibana-target-group"))
