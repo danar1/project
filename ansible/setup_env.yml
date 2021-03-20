@@ -9,6 +9,7 @@
     - grafana_name_tag: "grafana"
     - kibana_name_tag: "kibana"
     - elasticsearch_name_tag: "elasticsearch"
+    - mysql_name_tag: "mysql"
     
   roles:
     - role: ops-base
@@ -39,3 +40,7 @@
       when:
         - hostvars[inventory_hostname].tags.Name is defined
         - hostvars[inventory_hostname].tags.Name == elasticsearch_name_tag
+    - role: mysql
+      when:
+        - hostvars[inventory_hostname].tags.Name is defined
+        - hostvars[inventory_hostname].tags.Name == mysql_name_tag

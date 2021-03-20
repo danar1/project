@@ -26,6 +26,10 @@ dpkg -i filebeat-*.deb
 sudo mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.BCK
 
 sudo bash -c 'cat <<\EOF > /etc/filebeat/filebeat.yml
+
+setup.kibana:
+  host: "kibana.service.consul:5601"
+
 filebeat.inputs:
   - type: log
     enabled: false
@@ -37,13 +41,13 @@ filebeat.modules:
     syslog:
       enabled: false
     auth:
-      enabled: false
+      enabled: true
 
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
 
-setup.dashboards.enabled: false
+setup.dashboards.enabled: true
 
 setup.template.name: "filebeat"
 setup.template.pattern: "filebeat-*"
