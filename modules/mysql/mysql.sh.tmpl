@@ -12,7 +12,17 @@ sudo sed -i 's/bind-addres/#bind-addres/g' /etc/mysql/mysql.conf.d/mysqld.cnf
 
 sudo bash -c 'cat <<\EOF >> /etc/mysql/mysql.conf.d/mysqld.cnf
 bind-address = 0.0.0.0
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/mysql-slow.log
+long_query_time = 0
 EOF'
+
+# sudo mysql -se "SET global general_log = ON;"
+# sudo mysql -se "SET global general_log_file = '/var/log/mysql/mysql.log';"
+
+# sudo mysql -se "SET GLOBAL slow_query_log = 'ON';"
+# sudo mysql -se "SET GLOBAL long_query_time = 0;"
+# sudo mysql -se "SET GLOBAL slow_query_log_file = '/var/log/mysql/mysql-slow.log';"
 
 sudo systemctl stop mysql
 sudo systemctl start mysql
@@ -42,6 +52,13 @@ filebeat.modules:
       enabled: false
     auth:
       enabled: true
+  - module: mysql
+    error:
+      enabled: false
+      var.paths: ["/var/log/mysql/error.log"]
+    slowlog:
+      enabled: true
+      var.paths: ["/var/log/mysql/mysql-slow.log*"]
 
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
