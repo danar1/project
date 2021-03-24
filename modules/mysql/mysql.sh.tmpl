@@ -13,7 +13,6 @@ sudo sed -i 's/bind-addres/#bind-addres/g' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo bash -c 'cat <<\EOF >> /etc/mysql/mysql.conf.d/mysqld.cnf
 bind-address = 0.0.0.0
 slow_query_log = 1
-slow_query_log_file = /var/log/mysql/mysql-slow.log
 long_query_time = 0
 EOF'
 
@@ -55,10 +54,8 @@ filebeat.modules:
   - module: mysql
     error:
       enabled: false
-      var.paths: ["/var/log/mysql/error.log"]
     slowlog:
       enabled: true
-      var.paths: ["/var/log/mysql/mysql-slow.log*"]
 
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml

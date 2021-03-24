@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tolerate-pod
+  labels:
+    app: tolerate
+spec:
+  containers:
+    - image: gcr.io/kuar-demo/kuard-amd64:1
+      name: kuard
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+  tolerations:
+    - key: "node"
+      operator: "Equal"
+      value: "taint"
+      effect: "NoSchedule"
+  nodeSelector:
+    taint: tainted

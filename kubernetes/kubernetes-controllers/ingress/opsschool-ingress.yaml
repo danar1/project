@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: opsschool-ingress
+spec:
+  # ingressClassName: nginx # use only with k8s version >= 1.18.0
+  rules:
+  - host: opsschool.example.com
+    http:
+      paths:
+      - path: /hostname
+        backend:
+          serviceName: hostname-svc
+          servicePort: 80
+      - path: /apache
+        backend:
+          serviceName: apache-svc
+          servicePort: 80

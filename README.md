@@ -70,6 +70,23 @@ mv packer /usr/local/bin/
             "${OIDC_PROVIDER}:sub": "system:serviceaccount:<my-namespace>:<my-service-account>"
          }
          }
+   
+   boto3 in the kandula pod need permissions to execute operations in AWS
+   irsa is IAM roles for service accounts
+   How irsa works?
+   link: https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
+   it defines OIDC identity provider in AWS to forward requests from EKS to this OIDC provider
+   and then we create a IAM policy to access EC2 for example
+   and then we define role with this policy such that in the role "trust" we define that it will 
+   trust this OIDC provider we created for a service account in k8s defined in namespace with this service acount name (that kandula pod need to exist with it):
+   "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+         "StringEquals": {
+            "${OIDC_PROVIDER}:sub": "system:serviceaccount:<my-namespace>:<my-service-account>"
+         }
+         }
+   So we need also to create ServiceAccount with this name with annotation with this role name
+
 
 2. In order to allow Jenkins slaves access EKS cluster need to -
    a. After the environement is up run the following to update your kubeconfig file 
@@ -316,11 +333,52 @@ Add gihhub (GitHub App)
    https://www.consul.io/docs/k8s/installation/install
 3. Ensure you have access to the consul chart:
    $ helm search repo hashicorp/consul
-4. Create ossip encription secret 
+4. Create gossip encription secret 
 (note - when we create consul cluster, we use hash key that the servers are using to do gossip,
-in consul config file there is 'consul_encrypt' that there is a command in consul that allow create this key so that so that all the gossig between consul servers will be encrypted by using this key) 
+in consul config file there is 'consul_encrypt' that there is a command in consul that allow create this key so that all the gossig between consul servers will be encrypted by using this key) 
 kubectl create secret generic consul-gossip-encryption-key --from-literal=key="uDBV4e+LbFW3019YKPxIrg=="
 5. update values.yaml file:
+/project/kubernetes/coredns/coredns-kubernetes/consul-helm/values.yaml
+We define which consul components we want to install (we dont install server for example, we dont need, we ave consul servers outside the k8s cluster)
+we do 'enable' only to the components we want to install (all the rest of the components are disabled):
+- image
+- datacenter - same datacenter we are using in our consul (which is 'opsschool')
+- gossipEncryption - we give the k8s secret name and the "key" name in this secret (which is : key)
+- client definitions 
+  join: "provider=aws tag_key=Consul tag_value=consul-server" 
+  exposeGossipPorts: true
+- dns:
+  enable: true [To allow pods to do dns resolve also in consul]
+- syncCatalog
+  enable: true
+  toConsul: true
+  toK8S: true
+
+- Need to make sure that on the consul servers and the worker nodes, the followin DNS and gossip ports are open:
+dns: 8600
+LAN Serf: 8301
+WAN Serf: 8302
+
+- Now we need to install the consul helm chart with the values.yaml file
+helm install consul hashicorp/consul -f kubernetes/coredns/coredns-kubernetes/consul-helm/values.yaml
+
+note:
+  at this point we see in consul UI the k8s consul services 
+  and in k8s we see in 'kubectl get svc' , the consul services (those services type is: 'ExternalName')
+  and thier external ip is like the thire dns in consul (example: elasticsearch.service.consul)
+- Now we need to update the Corefile in the coredns configmap to forward queries to consul
+
+We will add to the core file resolve to top domain 'consul'
+
+consul {
+  errors
+  cache 30
+  forward . <consul-dns-cluster-ip> [this is the 'consul-consul-dns' service which was created in k8s when we installed consul with helm]
+  consul-consul-dns    ClusterIP      172.20.62.111   <none>
+  we will edit coredns configmap:
+  kubectl edit configmap coredns -n kube-system
+
+}
 
 
 
@@ -380,6 +438,49 @@ http.port: 9200
 network.host: 0.0.0.0
 EOF'
 
+
+# Enable mysql filebeat module
+when we enable module, this module filebeat config can be found under /usr/share/
+For example - for mysql module:
+/usr/share/filebeat/module/mysql/slowlog/config/slowlog.yml
+
+To see the slow.log file path 
+sudo mysql -e "show variables like 'slow_query_log_file';"
+
+To see all variables:
+sudo mysql -e "show variables"
+
+To see if slow_query_log file is enabled:
+sudo mysql -e "show variables like 'slow_query_log';"
+
+
+# Monitoring Kandula
+We instrument kandula to expose two metrics
+1. how many times each page was hit - Counter type metric
+2. time spent processing request - Summary type metric
+3. how many times each action was executed - stop/ start/ terminate - Counter metric
+
+- Run http server to expose the metrics on port 5001
+
+install prometheus in the k8s cluster
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/prometheus
+<!-- helm install prometheus stable/promethus --namespace monitoring -->
+
+ Create cluster ip service for kandula monitoring port 5001 (kandula-service-monitor:5001):
+  kubectl create -f svc-kandula-monitor.yaml    
+
+  Add the kandula monitoring as job in promethus config map:
+  kubectl edit cm prometheus-server -o yaml
+
+  - job_name: kandula
+      static_configs:
+      - targets:
+        - kandula-service-monitor:5001
+
+- this will setup prometheus to scrape all services with this annotation: 'prometheus.io/scrape: "true"'
+
+then we will configure grafana to query this prometheus k8s service
   
 
    

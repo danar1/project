@@ -28,7 +28,7 @@ resource "aws_lb_target_group" "grafana" {
 
   health_check {
     enabled = true
-    path    = "/"
+    path    = "/login"
   }
 
   tags = merge(var.tags, map("Name", "grafana-target-group"))

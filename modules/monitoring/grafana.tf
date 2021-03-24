@@ -5,7 +5,7 @@ resource "aws_instance" "grafana" {
   subnet_id     = var.private_subnets[0]
   vpc_security_group_ids = [aws_security_group.monitor_grafana.id, var.consul-security-group]
   key_name               = var.key_name
-  depends_on             = [var.nat_gw_id]
+  depends_on             = [var.nat_gw_id, aws_instance.prometheus]
   iam_instance_profile {
     name = var.consul-role
   }
@@ -25,5 +25,17 @@ resource "aws_instance" "grafana" {
   #     source      = "monitoring_folders"
   #     destination = "/home/ubuntu/monitoring_folders"
   #   }
+
+  provisioner "file" {
+      source      = var.monitoring_folder
+      destination = "/home/ubuntu"
+    }
+  
+  provisioner "remote-exec" {
+    inline = ["sudo chmod 755 monitoring_folders/setup/inst_docker.sh",
+              "sudo monitoring_folders/setup/inst_docker.sh",
+              "cd monitoring_folders/compose",
+              "sudo docker-compose -f docker-compose-grafana.yml up -d"]
+  }
 
 }

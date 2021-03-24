@@ -26,6 +26,21 @@ resource "aws_instance" "prometheus" {
   #     destination = "/home/ubuntu/monitoring_folders"
   #   }
 
+  provisioner "file" {
+      source      = var.monitoring_folder
+      destination = "/home/ubuntu"
+    }
+  
+  provisioner "remote-exec" {
+    inline = ["sudo chmod 755 monitoring_folders/setup/inst_docker.sh",
+              "sudo monitoring_folders/setup/inst_docker.sh",
+              "sudo chmod 755 monitoring_folders/setup/inst_node_exporter.sh",
+              "sudo monitoring_folders/setup/inst_node_exporter.sh",
+              "cd monitoring_folders/compose",
+              "sudo docker-compose -f docker-compose-prometheus.yml up -d"]
+  }
+  
+
 }
 
 

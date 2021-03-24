@@ -43,6 +43,11 @@ variable "port_3000_ips" {
   type        = list(string)
 }
 
+variable "monitoring_folder" {
+  description = "path to monitoring folder"
+  type        = string
+}
+
 variable "bastion_public_ips" {
   description = "list of bastion server public ips"
   type        = list(string)

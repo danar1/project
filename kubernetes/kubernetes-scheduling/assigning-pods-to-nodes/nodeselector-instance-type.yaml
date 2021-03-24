@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeselector
+spec:
+  selector:
+    matchLabels:
+      app: nodeselector-linux
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nodeselector-linux
+    spec:
+      containers:
+        - image: gcr.io/kuar-demo/kuard-amd64:1
+          name: kuard
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "128Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+      nodeSelector:
+        node.kubernetes.io/instance-type: t3.medium
