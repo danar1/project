@@ -28,7 +28,6 @@ mv packer /usr/local/bin/
 5. build the AMI:
    packer build -var-file=./vars.json template.json
 6. Save the AMI ID from packer output for later use
-(ami-083547ef8b8f5b0bc)
 
 # Create s3 bucket for remote state
 1. cd s3

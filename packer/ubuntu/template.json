@@ -23,9 +23,9 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "{{user `ssh_username`}}",
-        "ami_name": "project-packer {{timestamp}}",
+        "ami_name": "project-ami-{{isotime | clean_resource_name}}",
         "tags":{
-          "Name": "Project - {{timestamp}}"
+          "Name": "Project-{{timestamp}}"
         }
       }
     ],
